@@ -25,10 +25,6 @@ BeforeAll(prompt)
   .then(changes => {
     const md = GenerateMarkdown(version, changes);
     const buf = fs.readFileSync('./CHANGELOG.md');
-<<<<<<< Updated upstream
-    console.log(buf.toString());
-=======
->>>>>>> Stashed changes
     newChangelog = buf.toString().replace(/# CHANGELOG\n*/g, `# CHANGELOG\n${md}`);
     return prompt({
       type: 'confirm',
