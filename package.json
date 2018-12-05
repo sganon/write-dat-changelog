@@ -1,0 +1,25 @@
+{
+  "name": "write-dat-changelog",
+  "version": "0.1.0",
+  "description": "CLI to automatically write your CHANGELOG.md and set corresponding git tag",
+  "main": "dist/index.js",
+  "repository": "https://github.com/sganon/write-dat-changelog",
+  "author": "Simon Ganon <sganon@student.42.fr>",
+  "license": "MIT",
+  "scripts": {
+    "tsc": "tsc",
+    "start": "tsc && node dist/index.js"
+  },
+  "dependencies": {
+    "@types/handlebars": "^4.0.39",
+    "@types/inquirer": "^0.0.43",
+    "@types/node": "^10.12.12",
+    "@types/semver": "^5.5.0",
+    "command-exists": "^1.2.8",
+    "handlebars": "^4.0.12",
+    "inquirer": "^6.2.1",
+    "replace-in-file": "^3.4.2",
+    "semver": "^5.6.0",
+    "typescript": "^3.2.1"
+  }
+}
