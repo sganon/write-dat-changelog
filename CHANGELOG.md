@@ -1,5 +1,16 @@
 # CHANGELOG
 
+## 0.1.2 - 2018-12-05
+
+### Added
+* Using add-shebang to make package executable
+
+### Changed
+* Cleaning of package.json
+
+### Removed
+* replace-in-file package removed
+
 ## 0.1.1 - 2018-12-05
 
 ### Changed
