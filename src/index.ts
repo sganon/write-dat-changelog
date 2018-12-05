@@ -1,6 +1,5 @@
 import * as Inquirer from 'inquirer';
 import { SemVer } from 'semver';
-import * as ReplaceInFile from 'replace-in-file';
 import * as fs from 'fs';
 import { exec } from 'child_process';
 
