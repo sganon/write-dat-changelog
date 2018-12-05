@@ -8,8 +8,11 @@
   "license": "MIT",
   "bin": "dist/index.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc && add-shebang",
     "start": "node dist/index.js"
+  },
+  "devDependencies": {
+    "add-shebang": "^0.1.0"
   },
   "dependencies": {
     "@types/handlebars": "^4.0.39",
