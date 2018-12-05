@@ -1,20 +1,19 @@
 import { exec } from 'child_process';
 import { PromptModule, Question } from "inquirer";
-import { cpus } from 'os';
-import { SemVer, valid } from 'semver';
+import { SemVer, valid, clean } from 'semver';
 
 export const VersionPrompt = (prompt: PromptModule): Promise<SemVer> => {
   return new Promise((resolve, reject) => {
-    exec('git describe --tags', (err, stdout, stderr) => {
+    exec('git describe --tags --abbrev=0', (err, stdout, stderr) => {
       let question: Question = {
         name: 'newVersion',
       }
       if (!err) {
-        let verMaj = new SemVer(stdout);
-        let verMin = new SemVer(stdout);
-        let verPatch = new SemVer(stdout);
+        let verMaj = new SemVer(clean(stdout));
+        let verMin = new SemVer(clean(stdout));
+        let verPatch = new SemVer(clean(stdout));
         question.choices = [verMaj.inc("major").raw, verMin.inc("minor").raw, verPatch.inc("patch").raw];
-        question.type = 'choice';
+        question.type = 'list';
         question.message = 'Which version would you like to update to';
       } else {
         question.type = 'input';
