@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 0.1.3 - 2018-12-06
+
+### Changed
+* Fix async problem on BeforeAll check
+
 ## 0.1.2 - 2018-12-05
 
 ### Added
