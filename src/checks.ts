@@ -15,7 +15,7 @@ export const BeforeAll = (prompt:PromptModule): Promise<void> => {
         return reject('Please install git')
       }
       if (!fs.existsSync(changelogFile)) {
-        prompt({
+        return prompt({
           type: 'confirm',
           name: 'createFile',
           message: `File ${changelogFile} does not exist, would you like to create it`,
