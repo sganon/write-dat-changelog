@@ -34,12 +34,19 @@ BeforeAll(prompt)
   .then((answers: { override: boolean }) => {
     if (answers.override) {
       fs.writeFileSync('./CHANGELOG.md', Buffer.from(newChangelog));
-      console.log(`Creating git tag v${version.version}`);
-      exec(`git tag v${version.version}`, (err, stdout, stderr) => {
+      console.log(`Creating git tag v${version.version} on new commit`);
+      exec(`git commit --allow-empty -m "release: v${version}"`, (err, stdout, stderr) => {
         if (err) {
+          console.error(stdout, stderr);
           throw err;
         }
-      });
+        exec(`git tag v${version.version}`, (err, stdout, stderr) => {
+          if (err) {
+            console.error(stdout, stderr);
+            throw err;
+          }
+        });
+      })
     } else {
       throw new Error('Aborting process');
     }
@@ -48,3 +55,4 @@ BeforeAll(prompt)
     console.error(err);
     process.exit(1);
   });
+
