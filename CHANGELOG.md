@@ -5,11 +5,6 @@
 ### Added
 * Creating release commit before tagging
 
-## 0.2.0 - 2018-12-07
-
-### Added
-* Creating release commit before tagging
-
 ## 0.1.3 - 2018-12-06
 
 ### Changed

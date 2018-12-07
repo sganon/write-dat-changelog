@@ -1,6 +1,6 @@
 {
   "name": "write-dat-changelog",
-  "version": "0.1.3",
+  "version": "0.2.0",
   "description": "CLI to automatically write your CHANGELOG.md and set corresponding git tag",
   "main": "dist/index.js",
   "repository": "https://github.com/sganon/write-dat-changelog",
