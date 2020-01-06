@@ -9,6 +9,7 @@ export const VersionPrompt = (prompt: PromptModule): Promise<SemVer> => {
         name: 'newVersion',
       }
       if (!err) {
+        console.log(clean(stdout))
         let verMaj = new SemVer(clean(stdout));
         let verMin = new SemVer(clean(stdout));
         let verPatch = new SemVer(clean(stdout));
