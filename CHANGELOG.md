@@ -1,5 +1,10 @@
 # CHANGELOG
 
+## 0.2.2 - 2020-01-06
+
+### Changed
+* Updated yarn.lock
+
 ## 0.2.1 - 2020-01-06
 
 ### Changed
