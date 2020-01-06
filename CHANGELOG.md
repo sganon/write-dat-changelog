@@ -1,5 +1,12 @@
 # CHANGELOG
 
+## 0.2.1 - 2020-01-06
+
+### Changed
+* Locked packages version
+* Updated handlebars to latest version
+* Fixed git command to get latest git tag
+
 ## 0.2.0 - 2018-12-07
 
 ### Added
