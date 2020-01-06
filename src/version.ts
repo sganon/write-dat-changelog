@@ -4,12 +4,11 @@ import { SemVer, valid, clean } from 'semver';
 
 export const VersionPrompt = (prompt: PromptModule): Promise<SemVer> => {
   return new Promise((resolve, reject) => {
-    exec('git describe --tags --abbrev=0', (err, stdout, stderr) => {
+    exec('git tag --sort=committerdate | tail -1', (err, stdout, stderr) => {
       let question: Question = {
         name: 'newVersion',
       }
       if (!err) {
-        console.log(clean(stdout))
         let verMaj = new SemVer(clean(stdout));
         let verMin = new SemVer(clean(stdout));
         let verPatch = new SemVer(clean(stdout));
