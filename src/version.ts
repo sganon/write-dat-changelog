@@ -1,38 +1,27 @@
-import { exec } from 'child_process';
 import { PromptModule, Question } from "inquirer";
 import { SemVer, valid, clean } from 'semver';
 
-export const VersionPrompt = (prompt: PromptModule): Promise<SemVer> => {
-  return new Promise((resolve, reject) => {
-    exec('git tag --sort=committerdate | tail -1', (err, stdout, stderr) => {
-      let question: Question = {
-        name: 'newVersion',
-      }
-      if (!err) {
-        let verMaj = new SemVer(clean(stdout));
-        let verMin = new SemVer(clean(stdout));
-        let verPatch = new SemVer(clean(stdout));
-        question.choices = [verMaj.inc("major").raw, verMin.inc("minor").raw, verPatch.inc("patch").raw];
-        question.type = 'list';
-        question.message = 'Which version would you like to update to';
-      } else {
-        question.type = 'input';
-        question.message = 'We were unable to detect previous version, please set new version manually:';
-      }
-      prompt(question)
-      .then((answers: versionAnswers) => {
-        if (!valid(answers.newVersion)) {
-          return reject(`Version ${answers.newVersion} is not a correct semantic version please refers to: https://semver.org/`);
-        }
-        resolve(new SemVer(answers.newVersion));
-      })
-      .catch(err => {
-        reject(err);
-      });
-    });
-  });
-}
+import { ExecPromise } from './utils';
 
-interface versionAnswers {
-  newVersion: string;
+export const VersionPrompt = async (prompt: PromptModule): Promise<SemVer> => {
+  try {
+    let stdout = await ExecPromise(`git tag --sort=committerdate | tail -1`)
+    let question: Question = {
+      name: 'newVersion',
+    }
+    let verMaj = new SemVer(clean(stdout));
+    let verMin = new SemVer(clean(stdout));
+    let verPatch = new SemVer(clean(stdout));
+    question.choices = [verMaj.inc("major").raw, verMin.inc("minor").raw, verPatch.inc("patch").raw];
+    question.type = 'list';
+    question.message = 'Which version would you like to update to';
+
+    let { newVersion } = await prompt(question);
+    if (!valid(newVersion)) {
+      throw new Error(`Version ${newVersion} is not a correct semantic version please refers to: https://semver.org/`);
+    }
+    return new SemVer(newVersion);
+  } catch (e) {
+    throw e;
+  }
 }
