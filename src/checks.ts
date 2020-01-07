@@ -9,29 +9,25 @@ interface beforeAnswers {
   createFile: boolean;
 }
 
-export const BeforeAll = (prompt:PromptModule): Promise<void> => {
-  return new Promise((resolve, reject) => {
-      if (!commandExists('git')) {
-        return reject('Please install git')
+export const BeforeAll = async (prompt:PromptModule): Promise<void> => {
+  try {
+    if (!commandExists('git')) {
+      throw new Error('git is not installed');
+    }
+    if (!fs.existsSync(changelogFile)) {
+      let answers: beforeAnswers = await prompt({
+        type: 'confirm',
+        name: 'createFile',
+        message: `File ${changelogFile} does not exist, would you like to create it`,
+      });
+
+      if (answers.createFile) {
+        fs.writeFileSync(changelogFile, '# CHANGELOG\n');
+      } else {
+        throw new Error('Cannot continue without CHANGELOG.md');
       }
-      if (!fs.existsSync(changelogFile)) {
-        return prompt({
-          type: 'confirm',
-          name: 'createFile',
-          message: `File ${changelogFile} does not exist, would you like to create it`,
-        })
-        .then((answers: beforeAnswers) => {
-          if (answers.createFile) {
-            fs.writeFileSync(changelogFile, '# CHANGELOG\n');
-            resolve();
-          } else {
-            return reject(`Please retry after creating file ${changelogFile}`);
-          }
-        })
-        .catch(err => {
-          reject(err);
-        });
-      }
-      resolve();
-  });
+    }
+  } catch (e) {
+    throw e;
+  }
 }
