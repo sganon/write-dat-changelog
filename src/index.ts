@@ -1,58 +1,43 @@
-import * as Inquirer from 'inquirer';
-import { SemVer } from 'semver';
 import * as fs from 'fs';
-import { exec } from 'child_process';
+import * as Inquirer from 'inquirer';
 
+import { ExecPromise } from './utils';
 import { BeforeAll } from './checks';
 import { VersionPrompt } from './version';
 import { ChangelogPrompt } from './changelog';
 import { GenerateMarkdown } from './templating';
 
-const prompt = Inquirer.createPromptModule();
+(async () => {
+  try {
+    const prompt = Inquirer.createPromptModule();
 
-let version: SemVer;
-let newChangelog: string;
+    // performs some checks and creates changelog if does not exist 
+    await BeforeAll(prompt);
+    // asks for desired new version
+    let version = await VersionPrompt(prompt);
+    // asks for changelog content
+    let changes = await ChangelogPrompt(prompt);
 
-BeforeAll(prompt)
-  .then(() => {
-    return VersionPrompt(prompt);
-  })
-  .then((v) => {
-    version = v;
-    return ChangelogPrompt(prompt);
-  })
-  .then(changes => {
+    // generates and writes new changelog
     const md = GenerateMarkdown(version, changes);
     const buf = fs.readFileSync('./CHANGELOG.md');
-    newChangelog = buf.toString().replace(/# CHANGELOG\n*/g, `# CHANGELOG\n${md}`);
-    return prompt({
+    let newChangelog = buf.toString().replace(/# CHANGELOG\n*/g, `# CHANGELOG\n${md}`);
+    // asks confirmation before writing new changelog
+    let { override } = await prompt({
       type: 'confirm',
       name: 'override',
-      message: `Override CHANGELOG.md with:\n${newChangelog}`
-    });
-  })
-  .then((answers: { override: boolean }) => {
-    if (answers.override) {
-      fs.writeFileSync('./CHANGELOG.md', Buffer.from(newChangelog));
-      console.log(`Creating git tag v${version.version} on new commit`);
-      exec(`git commit --allow-empty -m "release: v${version}"`, (err, stdout, stderr) => {
-        if (err) {
-          console.error(stdout, stderr);
-          throw err;
-        }
-        exec(`git tag v${version.version}`, (err, stdout, stderr) => {
-          if (err) {
-            console.error(stdout, stderr);
-            throw err;
-          }
-        });
-      })
-    } else {
+      message: `Override CHANGELOG.md with:\n${newChangelog}`,
+    })
+    if (!override) {
       throw new Error('Aborting process');
     }
-  })
-  .catch(err => {
-    console.error(err);
-    process.exit(1);
-  });
 
+    fs.writeFileSync('./CHANGELOG.md', Buffer.from(newChangelog));
+    console.log(`Creating git tag v${version.version} on new commit`);
+    await ExecPromise(`git commit --allow-empty -m "release: v${version}"`);
+    await ExecPromise(`git tag v${version.version}`);
+  } catch (e) {
+    console.error(e);
+    process.exit(1);
+  }
+})();
