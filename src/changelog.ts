@@ -1,5 +1,4 @@
 import { PromptModule, Question } from "inquirer";
-import { resolve } from "url";
 
 const recursivePrompt = async (prompt: PromptModule, type: string, lines: string[],finished: boolean): Promise<string[]> => {
   try {
